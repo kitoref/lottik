@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Buy or Die</title>
+    <style>
+        /* --- Basic page setup --- */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #333;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden; /* Prevent scrolling on mobile */
+        }
+
+        /* --- Container & Canvas --- */
+        .container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border: 2px solid black;
+            background-color: #000;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background-color: #f0f0f0;
+        }
+
+        /* --- Overlays Common Styles --- */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            color: white;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 10;
+        }
+
+        /* Active overlay needs flex, not block */
+        .overlay.active {
+            display: flex;
+        }
+
+        /* --- Typography --- */
+        h1 { font-size: 72px; color: #ff4500; margin-bottom: 20px; text-transform: uppercase; }
+        h2 { font-size: 48px; color: #ff4500; margin-bottom: 30px; }
+        p { font-size: 24px; margin: 10px 0; }
+
+        /* --- Generic Buttons --- */
+        .menu-button {
+            background-color: #444;
+            color: white;
+            border: 2px solid #ff4500;
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 20px;
+            cursor: pointer;
+            width: 250px;
+            transition: background-color 0.2s;
+        }
+        .menu-button:hover, .menu-button:active {
+            background-color: #ff4500;
+        }
+
+        /* Selection menu specific */
+        #selection-options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        /* --- Mobile Controls (D-Pad) --- */
+        #mobile-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px 60px;
+            gap: 5px;
+            z-index: 5;
+            display: none; /* Hidden by default, activated by JS */
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            /* 1. Change the Background Color */
+            background-color: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            /* 2. Change the Text Color */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            touch-action: manipulation;
+            transition: background-color 0.1s ease-in-out;
+        }
+        
+        /* 3. Add Hover/Active State */
+        .control-btn:active {
+            background-color: rgba(255, 255, 255, 0.4);
+            color: #111;
+        }
+
+        /* D-pad positioning */
+        #up-button { grid-column: 2; grid-row: 1; }
+        #left-button { grid-column: 1; grid-row: 2; }
+        #right-button { grid-column: 3; grid-row: 2; }
+        #down-button { grid-column: 2; grid-row: 3; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+        <!-- Main Menu Overlay -->
+        <div id="main-menu" class="overlay active">
+            <h1>Buy or Die</h1>
+            <button id="start-button" class="menu-button">Start Game</button>
+            <button id="char-select-button" class="menu-button">Character Select</button>
+            <button id="high-scores-button" class="menu-button">High Scores</button>
+        </div>
+
+        <!-- Generic Selection Menu (replaces text-based prompts for Char/Difficulty select) -->
+        <div id="selection-menu" class="overlay">
+            <h2 id="selection-title">SELECT</h2>
+            <div id="selection-options">
+                <!-- Buttons will be injected here by JS -->
+            </div>
+            <button id="selection-back-button" class="menu-button" style="margin-top: 30px;">Back</button>
+        </div>
+
+        <!-- High Scores Overlay -->
+        <div id="high-scores-screen" class="overlay">
+            <h2>High Scores</h2>
+            <div id="high-scores-list"></div>
+            <button id="high-scores-back-button" class="menu-button" style="margin-top: 20px;">Back to Menu</button>
+        </div>
+
+        <!-- Game Over Overlay -->
+        <div id="game-over-screen" class="overlay">
+            <h2 style="color: #dc143c;">GAME OVER</h2>
+            <button id="restart-button" class="menu-button">Restart</button>
+            <button id="main-menu-button" class="menu-button">Main Menu</button>
+        </div>
+
+        <!-- Mobile Gameplay Controls -->
+        <div id="mobile-controls">
+            <div id="up-button" class="control-btn">↑</div>
+            <div id="left-button" class="control-btn">←</div>
+            <div id="down-button" class="control-btn">↓</div>
+            <div id="right-button" class="control-btn">→</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
